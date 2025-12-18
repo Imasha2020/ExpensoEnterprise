@@ -1,0 +1,92 @@
+# ==============================
+# Java / Spring Boot
+# ==============================
+
+# Compiled class files
+*.class
+
+# Maven / Gradle
+target/
+build/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Spring Boot specific
+spring.log
+spring.log.*
+
+# ==============================
+# Node / ReactJS
+# ==============================
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Optional npm cache
+.npm
+.npmrc
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ==============================
+# Misc
+# ==============================
+
+# Generated files
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.tmp
