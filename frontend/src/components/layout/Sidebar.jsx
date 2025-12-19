@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Home, User, Settings, FileText, LogOut } from "lucide-react";
 
+// activePath → currently active route
 export default function Sidebar({ links, activePath }) {
   const [active, setActive] = useState(activePath || links[0]?.path);
-
+// active → internal state, currently highlight වෙන්න තියෙන menu item
   const icons = {
     home: <Home size={18} />,
     user: <User size={18} />,

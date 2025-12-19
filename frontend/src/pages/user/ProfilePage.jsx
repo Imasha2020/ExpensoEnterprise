@@ -1,4 +1,4 @@
-import Input from "../../components/shared/Input";
+import Input from "../../components/shared/input";
 import Button from "../../components/shared/Button";
 import { User, Mail } from "lucide-react";
 
