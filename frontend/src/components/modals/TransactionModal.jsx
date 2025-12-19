@@ -1,4 +1,4 @@
-import Input from "../shared/Input";
+import Input from "../shared/input";
 import Select from "../shared/Select";
 import Button from "../shared/Button";
 

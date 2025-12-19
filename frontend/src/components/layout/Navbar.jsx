@@ -1,5 +1,8 @@
 import { LogOut } from "lucide-react";
 
+
+// user → Navbar එකේ user name display කරන්න. Default value "User".
+// onLogout → Logout button click වුනේම call කරන function.
 export default function Navbar({ user = "User", onLogout }) {
   return (
     <header className="bg-white shadow-md px-8 py-4 flex justify-between items-center font-sans">
