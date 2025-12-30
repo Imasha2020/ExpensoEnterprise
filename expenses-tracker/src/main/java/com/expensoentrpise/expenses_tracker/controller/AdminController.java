@@ -2,8 +2,13 @@ package com.expensoentrpise.expenses_tracker.controller;
 
 import com.expensoentrpise.expenses_tracker.dto.UserResponse;
 import com.expensoentrpise.expenses_tracker.repository.UserRepository;
+import com.expensoentrpise.expenses_tracker.service.AdminService;
+import com.expensoentrpise.expenses_tracker.service.UserService;
+import com.expensoentrpise.expenses_tracker.util.StandardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,19 +25,20 @@ public class AdminController {
     @Autowired
     private UserRepository userRepository;
 
-    // ✅ Only ADMIN can access
+    @Autowired
+    private AdminService adminServiceService;
+
+
+    //************************************************//
+    //GET ALL USERS//
+    //************************************************//
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UserResponse> getAllUsers() {
-
-        return userRepository.findAll()
-                .stream()
-                .map(user -> new UserResponse(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getRole().name()
-                ))
-                .toList();
+    public ResponseEntity<StandardResponse> getAllUsers(){
+        List<UserResponse> users = adminServiceService.getAllUsers();
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, "All users fetched Successfully", users), HttpStatus.OK
+        );
     }
+
 }
