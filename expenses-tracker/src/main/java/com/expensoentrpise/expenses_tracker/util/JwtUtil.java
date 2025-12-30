@@ -1,5 +1,6 @@
 package com.expensoentrpise.expenses_tracker.util;
 
+import com.expensoentrpise.expenses_tracker.security.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,9 +24,14 @@ public class JwtUtil {
 
     // Generate JWT
     public String generateToken(UserDetails user){
+        CustomUserDetails customUser = (CustomUserDetails) user;
         return Jwts.builder()
-                .setSubject(user.getUsername()) //Token එකේ subject එක ලෙස username / email එක save කරනවා
-                .claim("role" , user.getAuthorities()) // User ගේ role / authorities token එක ඇතුළට add කරනවා
+                .setSubject(customUser.getUsername())  //Token එකේ subject එක ලෙස username / email එක save කරනවා
+                .claim("userId", customUser.getId())  // ✅ ADD USER ID
+                .claim("role" , customUser.getAuthorities()
+                        .iterator()
+                        .next()
+                        .getAuthority())// User ගේ role / authorities token එක ඇතුළට add කරනවා
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis()+EXPIRATION))
                 .signWith(key ,SignatureAlgorithm.HS256 ) // HS256 algorithm එකෙන් secret key එක භාවිතා කර token එක sign කරනවා
@@ -38,6 +44,12 @@ public class JwtUtil {
         // subject (username/email) එක return කරනවා
         return getClaims(token).getSubject();
     }
+
+    //Extract userId from token
+    public Long extractUserId(String token) {
+        return getClaims(token).get("userId", Long.class);
+    }
+
 
     private Claims getClaims(String token){
         return Jwts.parserBuilder()

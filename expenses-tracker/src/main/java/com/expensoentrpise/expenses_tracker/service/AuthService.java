@@ -6,6 +6,7 @@ import com.expensoentrpise.expenses_tracker.dto.RegisterRequest;
 import com.expensoentrpise.expenses_tracker.dto.UserResponse;
 import com.expensoentrpise.expenses_tracker.model.User;
 import com.expensoentrpise.expenses_tracker.repository.UserRepository;
+import com.expensoentrpise.expenses_tracker.security.CustomUserDetails;
 import com.expensoentrpise.expenses_tracker.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,15 +34,11 @@ public class AuthService {
             throw new RuntimeException("Invalid credintials");
         }
 
-        String token = jwtUtil.generateToken(
-                new org.springframework.security.core.userdetails.User(
-                        user.getEmail() ,
-                        user.getPasswordHash(),
-                        List.of(new SimpleGrantedAuthority("ROLE_"+user.getRole()))
-                )
-        );
+        // ✅ USE CustomUserDetails
+        CustomUserDetails userDetails = new CustomUserDetails(user);
 
-        // Convert User entity → UserResponse DTO ✅
+        String token = jwtUtil.generateToken(userDetails);
+
         UserResponse userResponse = new UserResponse(
                 user.getId(),
                 user.getUsername(),
@@ -49,7 +46,7 @@ public class AuthService {
                 user.getRole().name()
         );
 
-        return new AuthResponse(token , userResponse);
+        return new AuthResponse(token, userResponse);
     }
 
     public void register(RegisterRequest req) {

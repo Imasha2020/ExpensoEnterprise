@@ -56,11 +56,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             );
 
                     SecurityContextHolder.getContext().setAuthentication(auth);
+
+                    // 🔥 VERY IMPORTANT: set userId for controller access
+                    Long userId = jwtUtil.extractUserId(token);
+                    request.setAttribute("userId", userId);
                 }
             }
         }
         //5) Continue request
         chain.doFilter(request , response);
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/api/auth");
+    }
+
 
 }

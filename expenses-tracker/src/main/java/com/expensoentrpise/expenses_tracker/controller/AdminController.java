@@ -3,7 +3,6 @@ package com.expensoentrpise.expenses_tracker.controller;
 import com.expensoentrpise.expenses_tracker.dto.UserResponse;
 import com.expensoentrpise.expenses_tracker.repository.UserRepository;
 import com.expensoentrpise.expenses_tracker.service.AdminService;
-import com.expensoentrpise.expenses_tracker.service.UserService;
 import com.expensoentrpise.expenses_tracker.util.StandardResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

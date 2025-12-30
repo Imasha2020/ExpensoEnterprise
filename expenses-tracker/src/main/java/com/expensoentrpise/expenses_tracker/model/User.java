@@ -9,7 +9,19 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_user_email", columnList = "email"),
+                @Index(name = "idx_user_role", columnList = "role"),
+                @Index(name = "idx_user_active", columnList = "is_active")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email"),
+                @UniqueConstraint(columnNames = "username")
+        }
+)
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -39,6 +51,9 @@ public class User {
 
     @CreationTimestamp
     private LocalDateTime createAt;
+
+    @CreationTimestamp
+    private LocalDateTime updatedAt;
 
     public enum Role {
         USER,

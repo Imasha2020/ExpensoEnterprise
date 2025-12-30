@@ -4,6 +4,7 @@ package com.expensoentrpise.expenses_tracker.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,7 +21,8 @@ import java.util.Arrays;
 // Spring configuration class එක
 // ==============================
 @Configuration               // මේ class එක Spring configuration එකක් කියලා කියන annotation
-@EnableWebSecurity            // Spring Security enable කරන annotation
+@EnableWebSecurity// Spring Security enable කරන annotation
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     // JWT token check කරන custom filter එක inject කරනවා
