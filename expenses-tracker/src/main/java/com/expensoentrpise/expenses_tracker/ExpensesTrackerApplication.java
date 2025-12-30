@@ -12,13 +12,13 @@ public class ExpensesTrackerApplication {
         // Application startup message
         System.out.println("\n" +
                 "╔══════════════════════════════════════════╗\n" +
-                "║        CoreHive Backend Started          ║\n" +
+                "║        Expenso Backend Started           ║\n" +
                 "║                                          ║\n" +
                 "║  🌐 Server: http://localhost:8080        ║\n" +
                 "║  📋 Health: /actuator/health             ║\n" +
                 "║  🧪 Test: /api/test                      ║\n" +
                 "║                                          ║\n" +
-                "║  Ready to serve CoreHive Frontend!       ║\n" +
+                "║  Ready to serve Expenso Frontend!        ║\n" +
                 "╚══════════════════════════════════════════╝\n");
 
     }
