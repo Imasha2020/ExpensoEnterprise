@@ -103,8 +103,8 @@ public class SecurityConfig {
         // ----------------
         // API call කරන්න allowed frontend URLs
         configuration.setAllowedOriginPatterns(Arrays.asList(
-                "http://localhost:3000",      // React dev server
-                "http://localhost:3001",      // Alternative local port
+                "http://localhost:5173",      // React dev server
+                "http://localhost:5174",      // Alternative local port
                 "https://corehive-frontend-app-cmbucjbga2e6amey.southeastasia-01.azurewebsites.net"
                 // Production frontend URL
         ));
