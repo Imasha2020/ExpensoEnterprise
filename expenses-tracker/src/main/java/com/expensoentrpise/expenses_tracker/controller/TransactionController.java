@@ -77,4 +77,17 @@ public class TransactionController {
         );
     }
 
+    //************************************************//
+    //DELETE A TRANSACTION BY ID(USER)//
+    //************************************************//
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<StandardResponse> deleteTransaction( HttpServletRequest request ,  @PathVariable Long id ){
+        Long userId = (Long) request.getAttribute("userId");
+        transactionService.deleteTransaction(userId , id);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, "Deleted  Transaction Successfully", null), HttpStatus.OK
+        );
+    }
+
 }

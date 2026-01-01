@@ -233,4 +233,29 @@ public class TransactionService {
         return response;
 
     }
+
+    //************************************************//
+    //DELETE A TRANSACTION BY ID//
+    //************************************************//
+    public void deleteTransaction(Long userId, Long id) {
+        // 1️⃣ Get User entity (FK requirement)
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with id: " + userId)
+                );
+
+        // 2️⃣ Fetch transaction by ID
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Transaction not found with id: " + id)
+                );
+
+        // 3️⃣ Ownership check (VERY IMPORTANT 🔐)
+        if (!transaction.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to access this transaction");
+        }
+
+        // 4️⃣ Delete transaction
+        transactionRepository.delete(transaction);
+    }
 }
