@@ -56,11 +56,25 @@ public class TransactionController {
     //************************************************//
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<StandardResponse> getSingleTransaction( HttpServletRequest request ,  @PathVariable Long id){
+    public ResponseEntity<StandardResponse> getSingleTransaction( HttpServletRequest request ,  @PathVariable Long id ){
         Long userId = (Long) request.getAttribute("userId");
         TransactionResponseDTO transactionResponseDTO = transactionService.getSingleTransaction(userId , id);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200, "Fetched  Transaction Successfully", transactionResponseDTO), HttpStatus.OK
         );
     }
+
+    //************************************************//
+    //UPDATE TRANSACTION BY ID//
+    //************************************************//
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<StandardResponse> updateTransaction( HttpServletRequest request ,  @PathVariable Long id , @RequestBody TransactionRequestDTO transactionRequestDTO){
+        Long userId = (Long) request.getAttribute("userId");
+        TransactionResponseDTO transactionResponseDTO = transactionService.updateTransaction(userId , id , transactionRequestDTO);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, "Updated  Transaction Successfully", transactionResponseDTO), HttpStatus.OK
+        );
+    }
+
 }

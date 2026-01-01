@@ -161,4 +161,76 @@ public class TransactionService {
 
         return dto;
     }
+
+    //************************************************//
+    //UPDATE TRANSACTION BY ID//
+    //************************************************//
+    public TransactionResponseDTO updateTransaction(Long userId, Long id, TransactionRequestDTO transactionRequestDTO) {
+        // 1️⃣ Get User entity (FK requirement)
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with id: " + userId)
+                );
+
+        // 2️⃣ Fetch transaction by ID
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Transaction not found with id: " + id)
+                );
+
+        // 3️⃣ Ownership check (VERY IMPORTANT 🔐)
+        if (!transaction.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to access this transaction");
+        }
+
+        // 4️⃣ Validate & fetch category (optional)
+        Category category = null;
+        if (transactionRequestDTO.getCategoryId() != null) {
+            category = categoryRepository.findById(transactionRequestDTO.getCategoryId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Category not found with id: "
+                                    + transactionRequestDTO.getCategoryId())
+                    );
+        }
+
+        // 5️⃣ Update transaction fields
+        transaction.setTitle(transactionRequestDTO.getTitle());
+        transaction.setAmount(transactionRequestDTO.getAmount());
+
+        try {
+            transaction.setType(
+                    Transaction.TransactionType
+                            .valueOf(transactionRequestDTO.getType())
+            );
+        } catch (IllegalArgumentException ex) {
+            throw new RuntimeException("Invalid transaction type");
+        }
+
+        transaction.setCategory(category);
+        transaction.setDescription(transactionRequestDTO.getDescription());
+        transaction.setTransactionDate(transactionRequestDTO.getTransactionDate());
+
+        // 6️⃣ Save updated transaction
+        Transaction updatedTransaction = transactionRepository.save(transaction);
+
+        // 7️⃣ Convert Entity → Response DTO
+        TransactionResponseDTO response = new TransactionResponseDTO();
+
+        response.setId(updatedTransaction.getId());
+        response.setTitle(updatedTransaction.getTitle());
+        response.setAmount(updatedTransaction.getAmount());
+        response.setType(updatedTransaction.getType().name());
+        response.setDescription(updatedTransaction.getDescription());
+        response.setTransactionDate(updatedTransaction.getTransactionDate());
+        response.setCreatedAt(updatedTransaction.getCreateAt());
+        response.setUpdatedAt(updatedTransaction.getUpdateAt());
+
+        if (updatedTransaction.getCategory() != null) {
+            response.setCategoryId(updatedTransaction.getCategory().getId());
+            response.setCategoryName(updatedTransaction.getCategory().getName());
+        }
+
+        return response;
+
+    }
 }
