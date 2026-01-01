@@ -47,8 +47,20 @@ public class TransactionController {
         Long userId = (Long) request.getAttribute("userId");
         List<TransactionResponseDTO> transactionResponseDTOs = transactionService.getAllTransactions(userId);
         return new ResponseEntity<StandardResponse>(
-                new StandardResponse(200, "Created Transaction Successfully", transactionResponseDTOs), HttpStatus.OK
+                new StandardResponse(200, "Fetched All Transactions Successfully", transactionResponseDTOs), HttpStatus.OK
         );
     }
 
+    //************************************************//
+    //GET ONE TRANSACTION BY ID//
+    //************************************************//
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<StandardResponse> getSingleTransaction( HttpServletRequest request ,  @PathVariable Long id){
+        Long userId = (Long) request.getAttribute("userId");
+        TransactionResponseDTO transactionResponseDTO = transactionService.getSingleTransaction(userId , id);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, "Fetched  Transaction Successfully", transactionResponseDTO), HttpStatus.OK
+        );
+    }
 }

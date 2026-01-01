@@ -11,6 +11,7 @@ import com.expensoentrpise.expenses_tracker.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -118,5 +119,46 @@ public class TransactionService {
                 })
                 .toList();   // Returns empty list if no transactions (GOOD)
 
+    }
+
+    //************************************************//
+    //GET ONE TRANSACTION BY ID//
+    //************************************************//
+    public TransactionResponseDTO getSingleTransaction(Long userId, Long id) {
+        // 1️⃣ Get User entity (FK requirement)
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with id: " + userId)
+                );
+
+        // 2️⃣ Fetch transaction by ID
+        Transaction transaction = transactionRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Transaction not found with id: " + id)
+                );
+
+        // 3️⃣ Ownership check (VERY IMPORTANT 🔐)
+        if (!transaction.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to access this transaction");
+        }
+
+        // 4️⃣ Convert Entity → Response DTO
+        TransactionResponseDTO dto = new TransactionResponseDTO();
+
+        dto.setId(transaction.getId());
+        dto.setTitle(transaction.getTitle());
+        dto.setAmount(transaction.getAmount());
+        dto.setType(transaction.getType().name());
+        dto.setDescription(transaction.getDescription());
+        dto.setTransactionDate(transaction.getTransactionDate());
+        dto.setCreatedAt(transaction.getCreateAt());
+        dto.setUpdatedAt(transaction.getUpdateAt());
+
+        if (transaction.getCategory() != null) {
+            dto.setCategoryId(transaction.getCategory().getId());
+            dto.setCategoryName(transaction.getCategory().getName());
+        }
+
+        return dto;
     }
 }
