@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TransactionService {
 
@@ -76,6 +78,45 @@ public class TransactionService {
         }
 
         return response;
+
+    }
+
+    //************************************************//
+    //GET ALL TRANSACTIONS//
+    //************************************************//
+    public List<TransactionResponseDTO> getAllTransactions(Long userId) {
+        // 1️⃣ Get User entity (FK requirement)
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found with id: " + userId)
+                );
+
+        // 2️⃣ Fetch transactions ONLY for this user
+        List<Transaction> transactions =
+                transactionRepository.findByUserOrderByTransactionDateDesc(user);
+
+        //4 3️⃣ Convert DTO -> Entity
+        return transactions.stream()
+                .map(transaction -> {
+                    TransactionResponseDTO transactionResponseDTO = new TransactionResponseDTO();
+
+                    transactionResponseDTO.setId(transaction.getId());
+                    transactionResponseDTO.setTitle(transaction.getTitle());
+                    transactionResponseDTO.setAmount(transaction.getAmount());
+                    transactionResponseDTO.setType(transaction.getType().name());
+                    transactionResponseDTO.setDescription(transaction.getDescription());
+                    transactionResponseDTO.setTransactionDate(transaction.getTransactionDate());
+                    transactionResponseDTO.setCreatedAt(transaction.getCreateAt());
+                    transactionResponseDTO.setUpdatedAt(transaction.getUpdateAt());
+
+                    // Category is optional
+                    if (transaction.getCategory() != null) {
+                        transactionResponseDTO.setCategoryId(transaction.getCategory().getId());
+                        transactionResponseDTO.setCategoryName(transaction.getCategory().getName());
+                    }
+                    return transactionResponseDTO;
+                })
+                .toList();   // Returns empty list if no transactions (GOOD)
 
     }
 }

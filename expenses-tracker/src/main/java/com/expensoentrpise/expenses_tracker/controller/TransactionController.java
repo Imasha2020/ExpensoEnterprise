@@ -37,4 +37,18 @@ public class TransactionController {
                 new StandardResponse(200, "Created Transaction Successfully", transactionResponseDTO), HttpStatus.OK
         );
     }
+
+    //************************************************//
+    //GET ALL TRANSACTIONS//
+    //************************************************//
+    @GetMapping
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<StandardResponse> getAllTransactions( HttpServletRequest request){
+        Long userId = (Long) request.getAttribute("userId");
+        List<TransactionResponseDTO> transactionResponseDTOs = transactionService.getAllTransactions(userId);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200, "Created Transaction Successfully", transactionResponseDTOs), HttpStatus.OK
+        );
+    }
+
 }
