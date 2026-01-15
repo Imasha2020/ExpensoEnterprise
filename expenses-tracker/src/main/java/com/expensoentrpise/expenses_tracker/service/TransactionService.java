@@ -70,8 +70,8 @@ public class TransactionService {
         response.setType(savedTransaction.getType().name());
         response.setDescription(savedTransaction.getDescription());
         response.setTransactionDate(savedTransaction.getTransactionDate());
-        response.setCreatedAt(savedTransaction.getCreateAt());
-        response.setUpdatedAt(savedTransaction.getUpdateAt());
+        response.setCreatedAt(savedTransaction.getCreatedAt());
+        response.setUpdatedAt(savedTransaction.getUpdatedAt());
 
         if (savedTransaction.getCategory() != null) {
             response.setCategoryId(savedTransaction.getCategory().getId());
@@ -107,8 +107,8 @@ public class TransactionService {
                     transactionResponseDTO.setType(transaction.getType().name());
                     transactionResponseDTO.setDescription(transaction.getDescription());
                     transactionResponseDTO.setTransactionDate(transaction.getTransactionDate());
-                    transactionResponseDTO.setCreatedAt(transaction.getCreateAt());
-                    transactionResponseDTO.setUpdatedAt(transaction.getUpdateAt());
+                    transactionResponseDTO.setCreatedAt(transaction.getCreatedAt());
+                    transactionResponseDTO.setUpdatedAt(transaction.getUpdatedAt());
 
                     // Category is optional
                     if (transaction.getCategory() != null) {
@@ -151,8 +151,8 @@ public class TransactionService {
         dto.setType(transaction.getType().name());
         dto.setDescription(transaction.getDescription());
         dto.setTransactionDate(transaction.getTransactionDate());
-        dto.setCreatedAt(transaction.getCreateAt());
-        dto.setUpdatedAt(transaction.getUpdateAt());
+        dto.setCreatedAt(transaction.getCreatedAt());
+        dto.setUpdatedAt(transaction.getUpdatedAt());
 
         if (transaction.getCategory() != null) {
             dto.setCategoryId(transaction.getCategory().getId());
@@ -222,8 +222,8 @@ public class TransactionService {
         response.setType(updatedTransaction.getType().name());
         response.setDescription(updatedTransaction.getDescription());
         response.setTransactionDate(updatedTransaction.getTransactionDate());
-        response.setCreatedAt(updatedTransaction.getCreateAt());
-        response.setUpdatedAt(updatedTransaction.getUpdateAt());
+        response.setCreatedAt(updatedTransaction.getCreatedAt());
+        response.setUpdatedAt(updatedTransaction.getUpdatedAt());
 
         if (updatedTransaction.getCategory() != null) {
             response.setCategoryId(updatedTransaction.getCategory().getId());

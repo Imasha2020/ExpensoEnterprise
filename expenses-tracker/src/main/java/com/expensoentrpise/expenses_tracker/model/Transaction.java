@@ -29,8 +29,11 @@ public class Transaction {
     private Long id;
 
     //Many transactions belong to one user
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "user_id" , nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            foreignKey = @ForeignKey(name = "fk_transaction_user")
+    )
     private User user;
 
     @Column(nullable = false , length = 100)
@@ -46,7 +49,10 @@ public class Transaction {
 
     //One transaction belong to one category But One category have many transactions
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(
+            name = "category_id",
+            foreignKey = @ForeignKey(name = "fk_transaction_category")
+    )
     private Category category;
 
     @Column(columnDefinition = "TEXT")
@@ -57,10 +63,11 @@ public class Transaction {
     private LocalDate transactionDate;
 
     @CreationTimestamp
-    private LocalDateTime createAt;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     public enum TransactionType {
         INCOME,

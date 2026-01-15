@@ -20,7 +20,7 @@ public class CustomUserDetails implements UserDetails {
         this.id = user.getId();                     // ✅ USER ID STORED
         this.email = user.getEmail();
         this.password = user.getPasswordHash();
-        this.active = user.isActive();
+        this.active = user.getIsActive();
         this.authorities = List.of(
                 new SimpleGrantedAuthority("ROLE_" + user.getRole())
         );

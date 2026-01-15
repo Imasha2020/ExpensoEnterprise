@@ -26,7 +26,7 @@ public class Category {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "created_by", length = 10)
+    @Column(name = "created_by", nullable = false, length = 10)
     private CategorySource createdBy;
 
     public enum CategorySource{

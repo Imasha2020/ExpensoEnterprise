@@ -73,7 +73,7 @@ public class AuthService {
         user.setRole(User.Role.USER);
 
         // ✅ Activate account
-        user.setActive(true);
+        user.getIsActive();
 
         // 4️⃣ Save user to database
         userRepo.save(user);

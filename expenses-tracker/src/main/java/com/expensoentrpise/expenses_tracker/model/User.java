@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -31,28 +32,32 @@ public class User {
     private Long id;
 
     // // Display name
-    @Column(nullable = false , unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
 
+
     //Used for login
-    @Column(nullable = false , unique=true)
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
     //Hashed password (BCrypt)
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     //USER or ADMIN
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
     private Role role;
 
     //soft delete / disable
-    private boolean isActive = true;
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 
     @CreationTimestamp
-    private LocalDateTime createAt;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     public enum Role {
