@@ -1,5 +1,4 @@
 import axios from "axios";
-
 /**
  * Axios instance
  * Token automatically attached from localStorage

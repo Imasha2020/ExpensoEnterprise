@@ -1,87 +1,158 @@
-import { NavLink } from "react-router-dom";
+import React from "react";
 import {
-  LayoutDashboard,
-  PlusCircle,
+  Box,
   List,
-  BarChart,
-  LogOut
-} from "lucide-react";
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Tooltip,
+  Typography,
+  Divider,
+} from "@mui/material";
+import { NavLink, useLocation } from "react-router-dom";
+
+import MenuIcon from "@mui/icons-material/Menu";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import LogoutIcon from "@mui/icons-material/Logout";
+
 import { useAuth } from "../auth/AuthContext";
 
-/*
- Sidebar component
- - User navigation only
- - UI + routing
- */
-export default function Sidebar() {
+const links = [
+  { path: "/user", label: "Dashboard", icon: <DashboardIcon /> },
+  { path: "/user/add", label: "Add Transaction", icon: <AddCircleOutlineIcon /> },
+  { path: "/user/transactions", label: "Transactions", icon: <ListAltIcon /> },
+  { path: "/user/analytics", label: "Analytics", icon: <BarChartIcon /> },
+];
 
+export default function Sidebar({ expanded, toggle }) {
+  const location = useLocation();
   const { logout } = useAuth();
-
-  // Sidebar menu items
-  const links = [
-    {
-      path: "/user",
-      label: "Dashboard",
-      icon: <LayoutDashboard size={18} />
-    },
-    {
-      path: "/user/add",
-      label: "Add Transaction",
-      icon: <PlusCircle size={18} />
-    },
-    {
-      path: "/user/transactions",
-      label: "Transactions",
-      icon: <List size={18} />
-    },
-    {
-      path: "/user/analytics",
-      label: "Analytics",
-      icon: <BarChart size={18} />
-    }
-  ];
+  const width = expanded ? 260 : 70;
 
   return (
-    <aside className="w-64 bg-white shadow-lg min-h-screen flex flex-col">
+    <Box
+      sx={{
+        width,
+        position: "fixed",
+        left: 0,
+        top: 0,
+        height: "100vh",
+        bgcolor: "background.paper",
+        borderRight: "1px solid",
+        borderColor: "divider",
+        transition: "width 0.3s ease",
+        overflowX: "hidden",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* HEADER */}
+      <Box sx={{ display: "flex", alignItems: "center", px: 1, py: 1 }}>
+        <IconButton onClick={toggle}>
+          <MenuIcon />
+        </IconButton>
 
-      {/* App / Logo */}
-      <div className="p-6 border-b">
-        <h2 className="text-xl font-bold text-slate-900">
-          Expenso
-        </h2>
-      </div>
-
-      {/* Menu */}
-      <nav className="flex-1 p-6 space-y-2">
-        {links.map((link) => (
-          <NavLink
-            key={link.path}
-            to={link.path}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-lg transition
-              ${
-                isActive
-                  ? "bg-indigo-100 text-indigo-700 font-semibold"
-                  : "text-slate-700 hover:bg-gray-100"
-              }`
-            }
+        {expanded && (
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            sx={{ ml: 1, whiteSpace: "nowrap" }}
           >
-            {link.icon}
-            <span>{link.label}</span>
-          </NavLink>
-        ))}
-      </nav>
+            Expenso
+          </Typography>
+        )}
+      </Box>
 
-      {/* Logout bottom */}
-      <div className="p-4 border-t">
-        <button
-          onClick={logout}
-          className="flex items-center gap-2 text-red-600 hover:text-red-700"
-        >
-          <LogOut size={16} />
-          Logout
-        </button>
-      </div>
-    </aside>
+      <Divider />
+
+      {/* NAVIGATION */}
+      <Box sx={{ flexGrow: 1, mt: 1 }}>
+        <List>
+          {links.map((link) => {
+            const active = location.pathname === link.path;
+
+            return (
+              <Tooltip
+                key={link.path}
+                title={!expanded ? link.label : ""}
+                placement="right"
+              >
+                <ListItemButton
+                  component={NavLink}
+                  to={link.path}
+                  sx={{
+                    mx: 1,
+                    mb: 1,
+                    borderRadius: 2,
+                    justifyContent: expanded ? "flex-start" : "center",
+                    bgcolor: active ? "primary.light" : "transparent",
+                    color: active ? "primary.main" : "text.secondary",
+                    "&:hover": { bgcolor: "primary.light" },
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: expanded ? 2 : 0,
+                      color: "inherit",
+                    }}
+                  >
+                    {link.icon}
+                  </ListItemIcon>
+
+                  {expanded && (
+                    <ListItemText
+                      primary={link.label}
+                      primaryTypographyProps={{ fontWeight: 500 }}
+                    />
+                  )}
+                </ListItemButton>
+              </Tooltip>
+            );
+          })}
+        </List>
+      </Box>
+
+      <Divider />
+
+      {/* LOGOUT */}
+      <Box sx={{ p: 1 }}>
+        <Tooltip title={!expanded ? "Logout" : ""} placement="right">
+          <ListItemButton
+            onClick={logout}
+            sx={{
+              mx: 1,
+              borderRadius: 2,
+              justifyContent: expanded ? "flex-start" : "center",
+              color: "error.main",
+              "&:hover": {
+                bgcolor: "error.light",
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: expanded ? 2 : 0,
+                color: "error.main",
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+
+            {expanded && (
+              <ListItemText
+                primary="Logout"
+                primaryTypographyProps={{ fontWeight: 500 }}
+              />
+            )}
+          </ListItemButton>
+        </Tooltip>
+      </Box>
+    </Box>
   );
 }
