@@ -1,68 +1,61 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
-/* Auth Pages */
-import LoginPage from "./pages/auth/LoginPage";
-import RegisterPage from "./pages/auth/RegisterPage";
+//ProtectedRoute import
+import ProtectedRoute from "./auth/ProtectedRoute";
 
-/* User Pages */
-import UserLayout from "./components/layout/UserLayout";
-import UserDashboard from "./pages/user/UserDashboard";
-import TransactionsPage from "./pages/user/TransactionsPage";
-import ProfilePage from "./pages/user/ProfilePage";
+//User imports
+import UserLayout from "./layouts/UserLayout";
+import Dashboard from "./pages/user/Dashboard";
+import AddTransaction from "./pages/user/AddTransaction";
+import Transactions from "./pages/user/Transactions";
+import Analytics from "./pages/user/Analytics";
 
-/* Admin Pages */
-import AdminLayout from "./components/layout/AdminLayout";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import UserManagement from "./pages/admin/UserManagement";
-import AdminTransactions from "./pages/admin/AdminTransactions";
-import CategoryManagement from "./pages/admin/CategoryManagement";
+//Admin imports
+import AdminDashboard from "./pages/AdminDashboard";
 
-/* Route Guard */
-import ProtectedRoute from "./routes/ProtectedRoute";
 
-export default function App() {
+const App = () => {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        {/* Public routes */}
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* USER ROUTES */}
+        {/* User protected */}
+       {/* USER AREA */}
         <Route
           path="/user"
           element={
-            <ProtectedRoute role="USER">
+            <ProtectedRoute allowedRole="ROLE_USER">
               <UserLayout />
             </ProtectedRoute>
           }
         >
-          <Route path="dashboard" element={<UserDashboard />} />
-          <Route path="transactions" element={<TransactionsPage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route index element={<Dashboard />} />
+          <Route path="add" element={<AddTransaction />} />
+          <Route path="transactions" element={<Transactions />} />
+          <Route path="analytics" element={<Analytics />} />
         </Route>
 
-        {/* ADMIN ROUTES */}
+  
+
+        {/* Admin protected */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute role="ADMIN">
-              <AdminLayout />
+            <ProtectedRoute allowedRole="ROLE_ADMIN">
+              <AdminDashboard />
             </ProtectedRoute>
           }
-        >
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="transactions" element={<AdminTransactions />} />
-          <Route path="categories" element={<CategoryManagement />} />
-        </Route>
-
-        {/* Fallback */}
-        <Route path="*" element={<h1 className="p-6">404 - Page Not Found</h1>} />
+        />
 
       </Routes>
     </BrowserRouter>
   );
-}
+};
+
+export default App;
