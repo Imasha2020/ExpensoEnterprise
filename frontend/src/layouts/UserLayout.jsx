@@ -53,7 +53,7 @@ export default function UserLayout() {
             flexGrow: 1,
             ml: { xs: 0, sm: `${sidebarWidth}px` },
             mt: "74px", // Matches navbar height + gap
-            p: { xs: 2, sm: 3, md: 4 },
+            p: { xs: 1.5, sm: 2, md: 3 },
             transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)", // Smoother animation
             width: { 
               xs: "100%", 
@@ -65,7 +65,7 @@ export default function UserLayout() {
           {/* Content Wrapper for a "Floating" look */}
           <Box sx={{
             bgcolor: "transparent",
-            minHeight: "calc(100vh - 120px)",
+            minHeight: "auto",
             borderRadius: "24px",
           }}>
             <Outlet />
