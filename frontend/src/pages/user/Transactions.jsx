@@ -7,8 +7,22 @@
  * - Show expandable transaction timeline
  * - Mobile-first premium UI
  */
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button
+} from "@mui/material";
 
 import React, { useEffect, useState } from "react";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+
+
 import {
   Box,
   Typography,
@@ -32,7 +46,7 @@ import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceW
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 /* ================= API ================= */
-import { getAllTransactions } from "../../api/TransactionService";
+import { getAllTransactions , deleteTransaction } from "../../api/TransactionService";
 
 /* =========================================================
    🎨 GLOBAL THEME COLORS
@@ -58,7 +72,7 @@ export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+ 
   /* ---------------- FETCH DATA ---------------- */
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -73,6 +87,21 @@ export default function Transactions() {
     };
     fetchTransactions();
   }, []);
+
+  // Delete Transaction Handler
+  const handleDeleteTransaction = async (id) => {
+  try {
+    await deleteTransaction(id);
+
+    // Optimistic UI update
+    setTransactions((prev) =>
+      prev.filter((tx) => tx.id !== id)
+    );
+  } catch (error) {
+    setError("Failed to delete transaction. Please try again.");
+  }
+};
+
 
   /* ---------------- CALCULATIONS ---------------- */
   const totalIncome = transactions
@@ -108,7 +137,7 @@ export default function Transactions() {
 
   return (
     // Container is a Material UI layout component
-    <Container maxWidth="lg" sx={{ py: 6 }} >
+    <Container maxWidth="lg"  >
 
       {/* =================================================
          🧾 HEADER SECTION
@@ -270,7 +299,13 @@ export default function Transactions() {
           <EmptyState text="Your financial timeline is empty." />
         ) : (
           transactions.map((tx, index) => (
-            <TransactionCard key={tx.id} tx={tx} index={index} />
+            <TransactionCard
+              key={tx.id}
+              tx={tx}
+              index={index}
+              onDelete={handleDeleteTransaction}
+            />
+
           ))
         )}
       </Stack>
@@ -321,22 +356,26 @@ function SummaryBlock({ type, amount, icon }) {
 /* =========================================================
    🧾 TRANSACTION CARD
    ========================================================= */
-function TransactionCard({ tx, index }) {
-  const [expanded, setExpanded] = useState(false);
+function TransactionCard({ tx, index  , onDelete}) {
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [expanded, setExpanded] = useState(false); //To hidden transaction description
   const isIncome = tx.type === "INCOME";
   const accentColor = isIncome ? COLORS.income : COLORS.expense;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
 
   return (
-    <Fade in timeout={500 + index * 100}>
+    <Fade in timeout={500 + index * 100}> 
+    {/* in -> Animation is active , timeout -> animation duration */}
       <Card
         onClick={() => setExpanded(!expanded)}
         sx={{
           borderRadius: "24px",
-          cursor: "pointer",
-          transition: "all 0.3s ease",
+          cursor: "pointer", //Changes mouse cursor //Tells user “this is clickable”
+          transition: "all 0.3s ease", //Smooth animation for hover / expand
           boxShadow: expanded
-            ? "0px 20px 40px rgba(112,144,176,0.15)"
-            : "0px 10px 20px rgba(112,144,176,0.05)",
+            ? "0px 20px 40px rgba(112,144,176,0.15)" //deeper shadow
+            : "0px 10px 20px rgba(112,144,176,0.05)", //lighter shadow
           border: "1px solid",
           borderColor: expanded ? accentColor : "transparent",
           position: "relative",
@@ -355,7 +394,8 @@ function TransactionCard({ tx, index }) {
           }}
         />
 
-        <Box sx={{ p: 2.5 }}>
+        <Box sx={{ p: 2.5 }}> 
+          {/* Padding inside the card */}
           {/* Main Row */}
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Stack direction="row" spacing={2.5} alignItems="center">
@@ -381,25 +421,109 @@ function TransactionCard({ tx, index }) {
 
             {/* Amount */}
             <Box textAlign="right">
-              <Typography fontWeight={900} color={accentColor} variant="h6">
-                {isIncome ? "+" : "-"} {Number(tx.amount).toLocaleString()}
-              </Typography>
+  {/* Amount */}
+  <Typography fontWeight={900} color={accentColor} variant="h6">
+    {isIncome ? "+" : "-"} {Number(tx.amount).toLocaleString()}
+  </Typography>
 
-              {tx.description && (
-                <Chip
-                  icon={<InfoOutlinedIcon sx={{ fontSize: 12 }} />}
-                  label="Note"
-                  size="small"
-                  sx={{
-                    height: 18,
-                    fontSize: 10,
-                    fontWeight: 700,
-                    bgcolor: COLORS.bg,
-                    border: "none",
-                  }}
-                />
-              )}
-            </Box>
+  {/* More options (⋮) */}
+  <IconButton
+    size="small"
+    onClick={(e) => {
+      e.stopPropagation(); // prevent card expand
+      setMenuAnchor(e.currentTarget);
+    }}
+  >
+    <MoreVertIcon fontSize="small" />
+  </IconButton>
+
+  {/* Note Indicator */}
+  {tx.description && (
+    <Chip
+      icon={<InfoOutlinedIcon sx={{ fontSize: 12 }} />}
+      label="Note"
+      size="small"
+      sx={{
+        height: 18,
+        fontSize: 10,
+        fontWeight: 700,
+        bgcolor: COLORS.bg,
+        border: "none",
+        mt: 0.5,
+      }}
+    />
+  )}
+
+  {/* Options Menu */}
+  <Menu
+    anchorEl={menuAnchor}
+    open={Boolean(menuAnchor)}
+    onClose={() => setMenuAnchor(null)}
+    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+    transformOrigin={{ vertical: "top", horizontal: "right" }}
+  >
+    <MenuItem
+      onClick={(e) => {
+        e.stopPropagation();
+        setMenuAnchor(null);
+        console.log("Edit transaction", tx.id);
+      }}
+    >
+      <EditOutlinedIcon fontSize="small" style={{ marginRight: 8 }} />
+      Edit
+    </MenuItem>
+
+    <MenuItem
+        onClick={(e) => {
+          e.stopPropagation();
+          setMenuAnchor(null);
+          setConfirmOpen(true);
+        }}
+        sx={{ color: COLORS.expense }}
+      >
+        <DeleteOutlineOutlinedIcon fontSize="small" style={{ marginRight: 8 }} />
+        Delete
+    </MenuItem>
+
+  </Menu>
+
+  <Dialog
+  open={confirmOpen}
+  onClose={() => setConfirmOpen(false)}
+>
+  <DialogTitle>Delete Transaction?</DialogTitle>
+
+  <DialogContent>
+    <Typography variant="body2" color="text.secondary">
+      This action cannot be undone. Are you sure you want to delete
+      <strong> {tx.title}</strong>?
+    </Typography>
+  </DialogContent>
+
+  <DialogActions>
+    <Button
+      onClick={() => setConfirmOpen(false)}
+      variant="outlined"
+    >
+      Cancel
+    </Button>
+
+    <Button
+      onClick={() => {
+        onDelete(tx.id);
+        setConfirmOpen(false);
+      }}
+      variant="contained"
+      color="error"
+    >
+      Delete
+    </Button>
+  </DialogActions>
+</Dialog>
+
+</Box>
+
+
           </Stack>
 
           {/* Expandable Description */}
