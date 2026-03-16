@@ -13,7 +13,8 @@ import Transactions from "./pages/user/Transactions";
 import Analytics from "./pages/user/Analytics";
 
 //Admin imports
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminLayout from "./layouts/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 
 const App = () => {
@@ -41,17 +42,17 @@ const App = () => {
           <Route path="analytics" element={<Analytics />} />
         </Route>
 
-  
-
         {/* Admin protected */}
         <Route
           path="/admin"
           element={
             <ProtectedRoute allowedRole="ROLE_ADMIN">
-              <AdminDashboard />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<AdminDashboard />} />
+        </Route>
 
       </Routes>
     </BrowserRouter>

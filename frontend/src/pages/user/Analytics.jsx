@@ -12,7 +12,7 @@ import {
   getIncomeByCategory,
 } from "../../api/analyticsApi";
 
-import CategoryChart from "../../components/CategoryChart";
+import CategoryChart from "../../components/user/CategoryChart";
 
 const COLORS = {
   bg: "#F4F7FE",

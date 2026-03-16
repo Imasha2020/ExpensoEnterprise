@@ -19,7 +19,7 @@ import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 
-import { useAuth } from "../auth/AuthContext";
+import { useAuth } from "../../auth/AuthContext";
 
 /* ================= CONSTANTS ================= */
 
@@ -41,7 +41,7 @@ const links = [
 
 /* ================= COMPONENT ================= */
 
-export default function Sidebar({ expanded, toggle }) {
+export default function UserSidebar({ expanded, toggle }) {
   const location = useLocation();
   const { logout } = useAuth();
 

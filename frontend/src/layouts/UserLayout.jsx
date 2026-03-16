@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
-import UserNavbar from "../components/UserNavbar";
+import Sidebar from "../components/user/UserSidebar";
+import UserNavbar from "../components/user/UserNavbar";
 
 const COLORS = {
   bg: "#F5EFFF",      // Lightest
